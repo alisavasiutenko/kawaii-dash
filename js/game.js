@@ -1,7 +1,6 @@
 'use strict';
 /* ============================================================
    Game – main controller, state machine, UI wiring
-   NOTE: TILE=40 and PLAYER_X=200 are declared in player.js
    ============================================================ */
 
 class Game {
@@ -11,7 +10,7 @@ class Game {
         this.ctx = this.canvas.getContext('2d');
 
         /* State */
-        this.state = 'menu';
+        this.state = GameState.MENU;
         this.currentLevel = 0;
         this.attempts = 1;
         this.worldX = 0;
@@ -68,7 +67,7 @@ class Game {
     }
 
     _onAction() {
-        if (this.state === 'playing' && this.player) {
+        if (this.state === GameState.PLAYING && this.player) {
             this.player.onPress();
         }
     }
@@ -174,7 +173,7 @@ class Game {
         if (savedColor) this.player.color = savedColor;
         const savedShape = localStorage.getItem('gd_player_shape');
         if (savedShape) this.player.shape = savedShape;
-        this.state = 'playing';
+        this.state = GameState.PLAYING;
         this.audio.play(lv.bpm, lv.theme);
     }
 
@@ -183,7 +182,7 @@ class Game {
         const dt = Math.min((ts - this._lastTime) / 1000, 0.05);
         this._lastTime = ts;
 
-        if (this.state === 'playing') this._update(dt);
+        if (this.state === GameState.PLAYING) this._update(dt);
         this.renderer.draw(this, dt);
 
         requestAnimationFrame(t => this._loop(t));
@@ -267,8 +266,8 @@ class Game {
 
     /* ──────────── Death ──────────── */
     _die() {
-        if (this.state !== 'playing') return;
-        this.state = 'dead';
+        if (this.state !== GameState.PLAYING) return;
+        this.state = GameState.DEAD;
         this.audio.stop();
 
         /* Burst particles */
@@ -288,14 +287,14 @@ class Game {
 
         const pct = Math.min(Math.round(this.worldX / this.levelDef.length * 100), 100);
         setTimeout(() => {
-            if (this.state === 'dead') this._showDeath(pct);
+            if (this.state === GameState.DEAD) this._showDeath(pct);
         }, 1400);
     }
 
     /* ──────────── Victory ──────────── */
     _victory() {
-        if (this.state !== 'playing') return;
-        this.state = 'victory';
+        if (this.state !== GameState.PLAYING) return;
+        this.state = GameState.VICTORY;
         this.audio.stop();
         const hasNext = this.currentLevel < LEVELS.length - 1;
         setTimeout(() => this._showVictory(hasNext), 600);

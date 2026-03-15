@@ -1,7 +1,6 @@
 'use strict';
 /* ============================================================
    LEVELS  – 8 kawaii easy levels ♡
-   T = tile size (40px)
    Each obstacle: { x, type, w?, h?, row?, ceiling?, mode? }
      type: 'spike' | 'block' | 'platform' | 'portal' | 'end'
      w/h : width/height in tiles (default 1)
@@ -9,7 +8,6 @@
      ceiling: attached to ceiling instead of floor
      mode: (portals only) 'cube'|'ship'|'ball'|'wave'
    ============================================================ */
-const T = 40;
 
 /* Helpers for building levels */
 function spike(x, row = 0)             { return { x, type: 'spike', row }; }
