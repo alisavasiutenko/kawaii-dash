@@ -17,7 +17,7 @@
 <body>
 
   <!-- Game canvas -->
-  <canvas id="gameCanvas"></canvas>
+  <canvas id="gameCanvas" role="img" aria-label="Geometry Dash Kawaii Edition game area"></canvas>
 
   <!-- ── MENU ── -->
   <div id="menuOverlay" class="overlay">
@@ -104,8 +104,8 @@
         </div>
       </div>
 
-      <button id="playBtn" class="btn-primary">♡ PLAY ♡</button>
-      <button id="editorBtn" class="btn-ghost" style="margin-top:-10px;">✏️ Level Editor</button>
+      <button id="playBtn" class="btn-primary" aria-label="Start game">♡ PLAY ♡</button>
+      <button id="editorBtn" class="btn-ghost" style="margin-top:-10px;" aria-label="Open level editor">✏️ Level Editor</button>
       <p class="hint">SPACE / Click / Tap to jump &nbsp;|&nbsp; Hold for Ship / Wave modes</p>
     </div>
   </div>
@@ -132,8 +132,8 @@
     <div class="panel">
       <h2 class="panel-title crash">oh no! 💔</h2>
       <p class="panel-sub">You reached <strong id="deathPct">0%</strong></p>
-      <button id="retryBtn" class="btn-primary">↺ Try Again!</button>
-      <button id="deathMenuBtn" class="btn-ghost">← Menu</button>
+      <button id="retryBtn" class="btn-primary" aria-label="Retry level">↺ Try Again!</button>
+      <button id="deathMenuBtn" class="btn-ghost" aria-label="Return to menu">← Menu</button>
     </div>
   </div>
 
@@ -142,8 +142,8 @@
     <div class="panel">
       <h2 class="panel-title win">You Win! ✨</h2>
       <div id="victoryStars" class="star-row">★★★</div>
-      <button id="nextBtn" class="btn-primary">Next Level ♡</button>
-      <button id="victoryMenuBtn" class="btn-ghost">← Menu</button>
+      <button id="nextBtn" class="btn-primary" aria-label="Go to next level">Next Level ♡</button>
+      <button id="victoryMenuBtn" class="btn-ghost" aria-label="Return to menu">← Menu</button>
     </div>
   </div>
 
@@ -165,7 +165,7 @@
         <button id="edClose" class="btn-ghost" style="padding:9px 22px; font-size:0.82rem;">CLOSE</button>
       </div>
     </div>
-    <canvas id="editorCanvas"></canvas>
+    <canvas id="editorCanvas" role="img" aria-label="Level editor canvas"></canvas>
   </div>
 
   <!-- ── SCRIPTS ── -->

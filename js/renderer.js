@@ -23,7 +23,7 @@ class Renderer {
         /* ── Background ── */
         this._drawBg(game, W, H, accent);
 
-        if (game.state === 'playing' || game.state === 'dead') {
+        if (game.state === GameState.PLAYING || game.state === GameState.DEAD) {
             this._drawGround(game, W, H, accent);
             this._drawObstacles(game);
             this._drawPlayer(game, accent);
@@ -31,7 +31,7 @@ class Renderer {
         }
 
         /* Death / Victory overlay pulse */
-        if (game.state === 'dead') {
+        if (game.state === GameState.DEAD) {
             ctx.fillStyle = `rgba(180,0,120,${0.08 + 0.06 * Math.sin(this._time * 8)})`;
             ctx.fillRect(0, 0, W, H);
         }

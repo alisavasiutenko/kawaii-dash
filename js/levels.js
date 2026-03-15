@@ -9,14 +9,16 @@
      mode: (portals only) 'cube'|'ship'|'ball'|'wave'
    ============================================================ */
 
-/* Helpers for building levels */
-function spike(x, row = 0)             { return { x, type: 'spike', row }; }
-function block(x, h = 1, row = 0)     { return { x, type: 'block', h, row }; }
-function blocks(x, w, h = 1, row = 0) { return { x, type: 'block', w, h, row }; }
-function ceilingSpike(x, row = 0)     { return { x, type: 'spike', row, ceiling: true }; }
-function ceilingBlock(x, h = 1, row = 0) { return { x, type: 'block', h, row, ceiling: true }; }
-function portal(x, mode)              { return { x, type: 'portal', w: 2, h: 5, mode }; }
-function end(x)                       { return { x, type: 'end' }; }
+const LevelHelpers = Object.freeze({
+    spike(x, row = 0)               { return { x, type: 'spike', row }; },
+    block(x, h = 1, row = 0)        { return { x, type: 'block', h, row }; },
+    ceilingSpike(x, row = 0)         { return { x, type: 'spike', row, ceiling: true }; },
+    ceilingBlock(x, h = 1, row = 0)  { return { x, type: 'block', h, row, ceiling: true }; },
+    portal(x, mode)                  { return { x, type: 'portal', w: 2, h: 5, mode }; },
+    end(x)                           { return { x, type: 'end' }; },
+});
+
+const { spike, block, ceilingSpike, ceilingBlock, portal, end } = LevelHelpers;
 
 /* ── LEVEL 1 – 🌸 Sakura Dream ── */
 const level1 = {

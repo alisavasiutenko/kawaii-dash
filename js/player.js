@@ -2,8 +2,6 @@
 /* ============================================================
    Player – physics, game modes, hitbox
    ============================================================ */
-const GRAVITY = 1900;   // px/s²
-const JUMP_VEL = -720;   // px/s (cube)
 
 class Player {
     constructor(screenX, groundY) {

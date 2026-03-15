@@ -40,6 +40,14 @@ class AudioManager {
     this._nodes = [];
   }
 
+  _pruneNodes() {
+    const limit = 200;
+    if (this._nodes.length > limit) {
+      const stale = this._nodes.splice(0, this._nodes.length - limit);
+      stale.forEach(n => { try { n.disconnect(); } catch (_) {} });
+    }
+  }
+
   /* ── helpers ── */
   _osc(type, freq, start, dur, gain = 0.4) {
     if (!this._ctx || !this._active) return;
@@ -54,6 +62,7 @@ class AudioManager {
     g.gain.exponentialRampToValueAtTime(0.001, start + dur);
     o.start(start);
     o.stop(start + dur + 0.01);
+    o.onended = () => { try { o.disconnect(); g.disconnect(); } catch (_) {} };
     this._nodes.push(o, g);
   }
 
@@ -75,6 +84,7 @@ class AudioManager {
     g.gain.setValueAtTime(gain, start);
     g.gain.exponentialRampToValueAtTime(0.001, start + dur);
     src.start(start);
+    src.onended = () => { try { src.disconnect(); g.disconnect(); flt.disconnect(); } catch (_) {} };
     this._nodes.push(src, g, flt);
   }
 
@@ -107,8 +117,11 @@ class AudioManager {
     this._noise(t,         0.04, 0.18);
     this._noise(t + b * 0.5, 0.04, 0.18);
 
+    // 0.95 beat interval: slight overlap prevents audible gaps between drum hits
     const id = setTimeout(() => this._scheduleDrums(beat + 1), b * 950);
     this._timers.push(id);
+
+    if (beat % 16 === 0) this._pruneNodes();
   }
 
   /* ── bass ── */
@@ -121,6 +134,7 @@ class AudioManager {
     const note  = scale[beat % scale.length];
     this._osc('sawtooth', note * 0.5, t, b * 0.85, 0.3);
 
+    // 1.0 beat interval: bass plays once per beat, no overlap needed
     const id = setTimeout(() => this._scheduleBass(beat + 1), b * 1000);
     this._timers.push(id);
   }
@@ -137,6 +151,7 @@ class AudioManager {
       this._osc('square', note, t, b * 0.6, 0.15);
     }
 
+    // 0.5 beat interval: melody runs at 8th-note resolution (twice per beat)
     const id = setTimeout(() => this._scheduleMelody(beat + 1), b * 500);
     this._timers.push(id);
   }

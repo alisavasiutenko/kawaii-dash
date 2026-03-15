@@ -15,8 +15,7 @@ class LevelEditor {
         this.selectedTool = 'spike';
         this.obstacles = [];
 
-        // Tools
-        this.tools = ['spike', 'block', 'portal-ship', 'portal-cube', 'end', 'erase'];
+        this.tools = ['spike', 'block', 'portal-ship', 'portal-cube', 'portal-wave', 'end', 'erase'];
 
         this._bindEvents();
     }
@@ -63,7 +62,7 @@ class LevelEditor {
         // Actions
         document.getElementById('edClose').addEventListener('click', () => {
             this.close();
-            this.game._showMenu();
+            this.game.returnToMenu();
         });
 
         document.getElementById('edTest').addEventListener('click', () => {
@@ -115,7 +114,7 @@ class LevelEditor {
         const x = cx - rect.left;
         const y = cy - rect.top;
 
-        const T = 40; // Tile size
+        const T = TILE;
         const worldX = this.scrollX + x;
 
         // Snap to grid
@@ -171,13 +170,8 @@ class LevelEditor {
             obstacles: finalObs
         };
 
-        // Inject into game
-        this.game.levelDef = levelData;
-        this.game.currentLevel = -1; // -1 denotes Custom Level
         this.close();
-        this.game._hideAll();
-        this.game._resetLevel();
-        this.game._showHud();
+        this.game.playCustomLevel(levelData);
     }
 
     /* ── Drawing ── */
@@ -192,7 +186,7 @@ class LevelEditor {
         ctx.fillRect(0, 0, W, H);
 
         // Grid
-        const T = 40;
+        const T = TILE;
         const offset = -(this.scrollX % T);
 
         ctx.strokeStyle = '#ffffff11';
@@ -214,7 +208,7 @@ class LevelEditor {
 
         // Player start pos
         ctx.fillStyle = '#ffffff66';
-        ctx.fillRect(200 - this.scrollX, this.groundY - T, T, T);
+        ctx.fillRect(PLAYER_X - this.scrollX, this.groundY - T, T, T);
 
         // Obstacles
         ctx.fillStyle = '#ff66cc';
