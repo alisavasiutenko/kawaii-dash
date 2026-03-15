@@ -7,7 +7,9 @@ class Game {
     constructor() {
         /* Canvas */
         this.canvas = document.getElementById('gameCanvas');
+        if (!this.canvas) throw new Error('Missing #gameCanvas element');
         this.ctx = this.canvas.getContext('2d');
+        if (!this.ctx) throw new Error('Unable to get 2D canvas context');
 
         /* State */
         this.state = GameState.MENU;
@@ -22,6 +24,19 @@ class Game {
 
         /* Hold tracking */
         this.heldDown = false;
+
+        /* Cached DOM elements */
+        this.$menuOverlay   = document.getElementById('menuOverlay');
+        this.$deathScreen   = document.getElementById('deathScreen');
+        this.$victoryScreen = document.getElementById('victoryScreen');
+        this.$gameHud       = document.getElementById('gameHud');
+        this.$hudLevelName  = document.getElementById('hudLevelName');
+        this.$hudAttempts   = document.getElementById('hudAttempts');
+        this.$hudMode       = document.getElementById('hudMode');
+        this.$progressBar   = document.getElementById('progressBar');
+        this.$progressPct   = document.getElementById('progressPct');
+        this.$deathPct      = document.getElementById('deathPct');
+        this.$nextBtn       = document.getElementById('nextBtn');
 
         // Engine systems
         this.audio = new AudioManager();
@@ -38,7 +53,8 @@ class Game {
 
         /* Loop */
         this._lastTime = 0;
-        requestAnimationFrame(t => this._loop(t));
+        this._boundLoop = (t) => this._loop(t);
+        requestAnimationFrame(this._boundLoop);
     }
 
     /* ──────────── Resize ──────────── */
@@ -121,12 +137,11 @@ class Game {
 
         /* Death → menu */
         document.getElementById('deathMenuBtn').addEventListener('click', () => {
-            this._hideAll();
-            this._showMenu();
+            this.returnToMenu();
         });
 
         /* Next level */
-        document.getElementById('nextBtn').addEventListener('click', () => {
+        this.$nextBtn.addEventListener('click', () => {
             this._hideAll();
             if (this.currentLevel < LEVELS.length - 1 && this.currentLevel !== -1) {
                 this.currentLevel++;
@@ -140,8 +155,7 @@ class Game {
 
         /* Victory → menu */
         document.getElementById('victoryMenuBtn').addEventListener('click', () => {
-            this._hideAll();
-            this._showMenu();
+            this.returnToMenu();
         });
 
         /* Level Editor */
@@ -150,10 +164,23 @@ class Game {
         });
     }
 
-    /* ──────────── Public entry ──────────── */
+    /* ──────────── Public API ──────────── */
     startLevel(idx) {
         this.currentLevel = idx;
         this.attempts = 1;
+        this._hideAll();
+        this._resetLevel();
+        this._showHud();
+    }
+
+    returnToMenu() {
+        this._hideAll();
+        this._showMenu();
+    }
+
+    playCustomLevel(levelData) {
+        this.levelDef = levelData;
+        this.currentLevel = -1;
         this._hideAll();
         this._resetLevel();
         this._showHud();
@@ -185,7 +212,7 @@ class Game {
         if (this.state === GameState.PLAYING) this._update(dt);
         this.renderer.draw(this, dt);
 
-        requestAnimationFrame(t => this._loop(t));
+        requestAnimationFrame(this._boundLoop);
     }
 
     /* ──────────── Update ──────────── */
@@ -225,7 +252,7 @@ class Game {
             if (obs.type === 'portal') {
                 if (this.player.overlaps(obs)) {
                     this.player.setMode(obs.mode);
-                    document.getElementById('hudMode').textContent = obs.mode.toUpperCase();
+                    this.$hudMode.textContent = obs.mode.toUpperCase();
                 }
                 continue;
             }
@@ -313,40 +340,39 @@ class Game {
 
     /* ──────────── UI helpers ──────────── */
     _hideAll() {
-        ['menuOverlay', 'deathScreen', 'victoryScreen'].forEach(id =>
-            document.getElementById(id).classList.add('hidden')
-        );
-        document.getElementById('gameHud').classList.add('hidden');
+        this.$menuOverlay.classList.add('hidden');
+        this.$deathScreen.classList.add('hidden');
+        this.$victoryScreen.classList.add('hidden');
+        this.$gameHud.classList.add('hidden');
     }
 
     _showMenu() {
-        this.state = 'menu';
+        this.state = GameState.MENU;
         this.audio.stop();
-        document.getElementById('menuOverlay').classList.remove('hidden');
+        this.$menuOverlay.classList.remove('hidden');
     }
 
     _showHud() {
-        const hud = document.getElementById('gameHud');
-        hud.classList.remove('hidden');
-        document.getElementById('hudLevelName').textContent = this.levelDef.name;
-        document.getElementById('hudAttempts').textContent = `Attempt ${this.attempts}`;
-        document.getElementById('hudMode').textContent = 'CUBE';
+        this.$gameHud.classList.remove('hidden');
+        this.$hudLevelName.textContent = this.levelDef.name;
+        this.$hudAttempts.textContent = `Attempt ${this.attempts}`;
+        this.$hudMode.textContent = 'CUBE';
         this._setProgress(0);
     }
 
     _setProgress(pct) {
-        document.getElementById('progressBar').style.width = (pct * 100).toFixed(1) + '%';
-        document.getElementById('progressPct').textContent = Math.round(pct * 100) + '%';
+        this.$progressBar.style.width = (pct * 100).toFixed(1) + '%';
+        this.$progressPct.textContent = Math.round(pct * 100) + '%';
     }
 
     _showDeath(pct) {
-        document.getElementById('deathPct').textContent = pct + '%';
-        document.getElementById('deathScreen').classList.remove('hidden');
+        this.$deathPct.textContent = pct + '%';
+        this.$deathScreen.classList.remove('hidden');
     }
 
     _showVictory(hasNext) {
-        document.getElementById('nextBtn').style.display = hasNext ? '' : 'none';
-        document.getElementById('victoryScreen').classList.remove('hidden');
+        this.$nextBtn.style.display = hasNext ? '' : 'none';
+        this.$victoryScreen.classList.remove('hidden');
     }
 }
 
