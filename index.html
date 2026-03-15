@@ -16,6 +16,16 @@
 
 <body>
 
+  <!-- ── PASSWORD GATE ── -->
+  <div id="passwordOverlay" class="overlay">
+    <div class="panel password-panel">
+      <h2 class="panel-title" style="font-size:clamp(1rem, 3vw, 1.6rem); color:var(--pink);">Enter the password to play game</h2>
+      <input id="passwordInput" type="password" class="pw-input" placeholder="Password..." autocomplete="off" />
+      <p id="passwordError" class="pw-error"></p>
+      <button id="passwordBtn" class="btn-primary">♡ ENTER ♡</button>
+    </div>
+  </div>
+
   <!-- Game canvas -->
   <canvas id="gameCanvas" role="img" aria-label="Geometry Dash Kawaii Edition game area"></canvas>
 
@@ -167,6 +177,39 @@
     </div>
     <canvas id="editorCanvas" role="img" aria-label="Level editor canvas"></canvas>
   </div>
+
+  <!-- ── PASSWORD GATE SCRIPT ── -->
+  <script>
+  (function() {
+    var overlay  = document.getElementById('passwordOverlay');
+    var input    = document.getElementById('passwordInput');
+    var btn      = document.getElementById('passwordBtn');
+    var error    = document.getElementById('passwordError');
+    var menu     = document.getElementById('menuOverlay');
+
+    menu.classList.add('hidden');
+
+    function attempt() {
+      if (input.value === 'password') {
+        overlay.classList.add('hidden');
+        menu.classList.remove('hidden');
+      } else {
+        error.textContent = 'Wrong password! Try again 💔';
+        input.classList.add('shake');
+        setTimeout(function() { input.classList.remove('shake'); }, 500);
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    btn.addEventListener('click', attempt);
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') attempt();
+    });
+
+    input.focus();
+  })();
+  </script>
 
   <!-- ── SCRIPTS ── -->
   <script src="js/constants.js"></script>

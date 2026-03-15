@@ -589,3 +589,64 @@ body::before {
   0%, 100% { transform: scale(1); opacity: 0.1; }
   50%       { transform: scale(1.15); opacity: 0.18; }
 }
+
+/* ──────────────────────────────────────────
+   PASSWORD GATE
+────────────────────────────────────────── */
+#passwordOverlay {
+  z-index: 100;
+}
+
+.password-panel {
+  gap: 18px;
+  padding: 40px 48px;
+  min-width: 300px;
+}
+
+.pw-input {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 18px;
+  border: 2px solid rgba(255, 179, 217, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: center;
+  outline: none;
+  transition: border-color .25s, box-shadow .25s;
+}
+
+.pw-input::placeholder {
+  color: rgba(255, 200, 230, 0.35);
+}
+
+.pw-input:focus {
+  border-color: var(--hotpink);
+  box-shadow: 0 0 22px rgba(255, 119, 198, 0.4);
+}
+
+.pw-error {
+  font-family: 'Nunito', sans-serif;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--red);
+  min-height: 1.2em;
+  text-shadow: 0 0 10px rgba(255, 100, 100, 0.5);
+}
+
+.pw-input.shake {
+  animation: pwShake .45s ease-in-out;
+  border-color: var(--red);
+  box-shadow: 0 0 18px rgba(255, 100, 100, 0.5);
+}
+
+@keyframes pwShake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-10px); }
+  40%      { transform: translateX(10px); }
+  60%      { transform: translateX(-6px); }
+  80%      { transform: translateX(6px); }
+}
