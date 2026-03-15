@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geometry Dash ✦ Kawaii Edition</title>
+  <meta name="description"
+    content="Geometry Dash Kawaii Edition – a cute pastel rhythm-based platformer. Play in your browser!" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Pacifico&family=Orbitron:wght@400;700;900&display=swap"
+    rel="stylesheet" />
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Game canvas -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- ── MENU ── -->
+  <div id="menuOverlay" class="overlay">
+    <div class="menu-content">
+      <h1 class="game-title">
+        Geometry<br><span>Dash</span>
+        <small class="title-hearts">♡ ✦ ♡</small>
+      </h1>
+
+      <div class="level-select" id="levelSelect">
+        <button class="level-btn active" data-level="0" id="lvlBtn0">
+          <span class="lvl-icon">🌸</span>
+          <span class="lvl-name">Sakura Dream</span>
+          <span class="lvl-stars">★☆☆</span>
+          <span class="lvl-tag">Easy ✦</span>
+        </button>
+        <button class="level-btn" data-level="1" id="lvlBtn1">
+          <span class="lvl-icon">🦋</span>
+          <span class="lvl-name">Butterfly Garden</span>
+          <span class="lvl-stars">★☆☆</span>
+          <span class="lvl-tag">Easy ✦</span>
+        </button>
+        <button class="level-btn" data-level="2" id="lvlBtn2">
+          <span class="lvl-icon">🍭</span>
+          <span class="lvl-name">Candy Land</span>
+          <span class="lvl-stars">★★☆</span>
+          <span class="lvl-tag">Easy ✦</span>
+        </button>
+        <button class="level-btn" data-level="3" id="lvlBtn3">
+          <span class="lvl-icon">🌙</span>
+          <span class="lvl-name">Moon Bunny</span>
+          <span class="lvl-stars">★☆☆</span>
+          <span class="lvl-tag">Easy ✦</span>
+        </button>
+        <button class="level-btn" data-level="4" id="lvlBtn4">
+          <span class="lvl-icon">🌈</span>
+          <span class="lvl-name">Rainbow Road</span>
+          <span class="lvl-stars">★★☆</span>
+          <span class="lvl-tag">Easy ✦</span>
+        </button>
+        <button class="level-btn" data-level="5" id="lvlBtn5">
+          <span class="lvl-icon">🍬</span>
+          <span class="lvl-name">Sugar Rush</span>
+          <span class="lvl-stars">★★☆</span>
+          <span class="lvl-tag">Easy ✦</span>
+        </button>
+        <button class="level-btn" data-level="6" id="lvlBtn6">
+          <span class="lvl-icon">🌷</span>
+          <span class="lvl-name">Flower Power</span>
+          <span class="lvl-stars">★★☆</span>
+          <span class="lvl-tag">Easy ✦</span>
+        </button>
+        <button class="level-btn" data-level="7" id="lvlBtn7">
+          <span class="lvl-icon">⭐</span>
+          <span class="lvl-name">Starlight</span>
+          <span class="lvl-stars">★★★</span>
+          <span class="lvl-tag">Medium ✦</span>
+        </button>
+      </div>
+
+      <!-- Avatar customization -->
+      <div class="avatar-section">
+        <p class="avatar-label">✦ AVATAR COLOR ✦</p>
+        <div class="color-palette" id="colorPalette">
+          <button class="color-swatch active" data-color="#ff9ed2" style="--c:#ff9ed2" title="Sakura Pink"></button>
+          <button class="color-swatch" data-color="#d4aaff" style="--c:#d4aaff" title="Lavender"></button>
+          <button class="color-swatch" data-color="#aaf0d1" style="--c:#aaf0d1" title="Mint"></button>
+          <button class="color-swatch" data-color="#ffd6a5" style="--c:#ffd6a5" title="Peach"></button>
+          <button class="color-swatch" data-color="#a8d8ff" style="--c:#a8d8ff" title="Sky Blue"></button>
+          <button class="color-swatch" data-color="#fff4a8" style="--c:#fff4a8" title="Lemon"></button>
+          <button class="color-swatch" data-color="#ff77c6" style="--c:#ff77c6" title="Hot Pink"></button>
+          <button class="color-swatch" data-color="#b86bff" style="--c:#b86bff" title="Purple"></button>
+          <button class="color-swatch" data-color="#ffffff" style="--c:#ffffff" title="White"></button>
+        </div>
+
+        <p class="avatar-label" style="margin-top:6px;">✦ AVATAR SHAPE ✦</p>
+        <div class="shape-palette" id="shapePalette">
+          <button class="shape-swatch active" data-shape="square" title="Square">⬛</button>
+          <button class="shape-swatch" data-shape="star"    title="Star">⭐</button>
+          <button class="shape-swatch" data-shape="heart"   title="Heart">💗</button>
+          <button class="shape-swatch" data-shape="diamond" title="Diamond">💎</button>
+          <button class="shape-swatch" data-shape="cat"     title="Cat">🐱</button>
+          <button class="shape-swatch" data-shape="flower"  title="Flower">🌸</button>
+        </div>
+      </div>
+
+      <button id="playBtn" class="btn-primary">♡ PLAY ♡</button>
+      <button id="editorBtn" class="btn-ghost" style="margin-top:-10px;">✏️ Level Editor</button>
+      <p class="hint">SPACE / Click / Tap to jump &nbsp;|&nbsp; Hold for Ship / Wave modes</p>
+    </div>
+  </div>
+
+  <!-- ── HUD ── -->
+  <div id="gameHud" class="hud hidden">
+    <div class="hud-left">
+      <div id="hudLevelName" class="hud-lvl-name"></div>
+      <div class="progress-wrap">
+        <div class="progress-track">
+          <div id="progressBar" class="progress-fill"></div>
+        </div>
+        <span id="progressPct" class="progress-label">0%</span>
+      </div>
+    </div>
+    <div class="hud-right">
+      <span id="hudAttempts" class="hud-attempts">Attempt 1</span>
+      <span id="hudMode" class="hud-mode-badge">CUBE</span>
+    </div>
+  </div>
+
+  <!-- ── DEATH SCREEN ── -->
+  <div id="deathScreen" class="overlay hidden">
+    <div class="panel">
+      <h2 class="panel-title crash">oh no! 💔</h2>
+      <p class="panel-sub">You reached <strong id="deathPct">0%</strong></p>
+      <button id="retryBtn" class="btn-primary">↺ Try Again!</button>
+      <button id="deathMenuBtn" class="btn-ghost">← Menu</button>
+    </div>
+  </div>
+
+  <!-- ── VICTORY SCREEN ── -->
+  <div id="victoryScreen" class="overlay hidden">
+    <div class="panel">
+      <h2 class="panel-title win">You Win! ✨</h2>
+      <div id="victoryStars" class="star-row">★★★</div>
+      <button id="nextBtn" class="btn-primary">Next Level ♡</button>
+      <button id="victoryMenuBtn" class="btn-ghost">← Menu</button>
+    </div>
+  </div>
+
+  <!-- ── LEVEL EDITOR ── -->
+  <div id="editorOverlay" class="overlay hidden"
+    style="flex-direction:column; justify-content:flex-start;">
+    <div class="ed-toolbar">
+      <div class="ed-tools">
+        <button class="ed-tool active" data-tool="spike">🔺 Spike</button>
+        <button class="ed-tool" data-tool="block">🟪 Block</button>
+        <button class="ed-tool" data-tool="portal-ship">✈️ Ship Portal</button>
+        <button class="ed-tool" data-tool="portal-cube">⬛ Cube Portal</button>
+        <button class="ed-tool" data-tool="portal-wave">〰️ Wave Portal</button>
+        <button class="ed-tool" data-tool="end">🏁 End</button>
+        <button class="ed-tool" data-tool="erase">❌ Erase</button>
+      </div>
+      <div class="ed-actions">
+        <button id="edTest" class="btn-primary" style="padding:9px 22px; font-size:0.82rem;">▶ TEST</button>
+        <button id="edClose" class="btn-ghost" style="padding:9px 22px; font-size:0.82rem;">CLOSE</button>
+      </div>
+    </div>
+    <canvas id="editorCanvas"></canvas>
+  </div>
+
+  <!-- ── SCRIPTS ── -->
+  <script src="js/audio.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/obstacles.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/game.js"></script>
+</body>
+
+</html>
