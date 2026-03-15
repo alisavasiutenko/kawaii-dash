@@ -32,7 +32,11 @@ class Renderer {
 
         /* Death / Victory overlay pulse */
         if (game.state === GameState.DEAD) {
-            ctx.fillStyle = `rgba(180,0,120,${0.08 + 0.06 * Math.sin(this._time * 8)})`;
+            const isDoom = typeof DoomMode !== 'undefined' && DoomMode.active;
+            const pulse = 0.08 + 0.06 * Math.sin(this._time * 8);
+            ctx.fillStyle = isDoom
+                ? `rgba(200,0,0,${pulse * 1.8})`
+                : `rgba(180,0,120,${pulse})`;
             ctx.fillRect(0, 0, W, H);
         }
     }

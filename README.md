@@ -29,8 +29,14 @@ Just click here to play instantly: **[Play Kawaii Dash!](https://alisavasiutenko
 * **Ball:** Tap to reverse gravity
 * **Wave:** Hold to fly diagonally up, release to fly diagonally down
 
-## 💖 Contributing
-Feel free to open a Pull Request or Issue if you want to add more levels, shapes, or cute stuff!
+## ☠️ Secret: DOOM Mode
+There's a hidden easter egg. Instead of the normal password, type `doom` at the gate to unleash **Geometry DOOM** — a full hellfire reskin of the game:
+
+* 🔥 **4 brutal levels** — *Knee-Deep in the Dead*, *The Shores of Hell*, *Inferno*, *Thy Flesh Consumed*
+* 👹 **6 demon shapes** — Doomguy, Cacodemon, Lost Soul, Pentagram, Imp, BFG 9000
+* 🎨 **Hell palette** — Marine Green, Demon Red, Hell Fire, Plasma Gold, Toxic Green, and more
+* 🎶 **Dark audio** — heavier drums, ominous bass, minor-key melody
+* 💀 **Full UI reskin** — lava ground, fire particles, screen shake on death, vignette overlay
 
 ## 📜 License
 This project is licensed under the MIT License - see the `LICENSE` file for details.

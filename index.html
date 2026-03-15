@@ -12,6 +12,7 @@
     rel="stylesheet" />
   <link rel="icon" href="favicon.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="doom-style.css" />
 </head>
 
 <body>
@@ -189,10 +190,23 @@
 
     menu.classList.add('hidden');
 
+    function activateDoom() {
+      var waitForGame = setInterval(function() {
+        if (window.game && typeof DoomMode !== 'undefined') {
+          clearInterval(waitForGame);
+          DoomMode.activate(window.game);
+        }
+      }, 50);
+    }
+
     function attempt() {
       if (input.value === 'password') {
         overlay.classList.add('hidden');
         menu.classList.remove('hidden');
+      } else if (input.value.toLowerCase() === 'doom') {
+        overlay.classList.add('hidden');
+        menu.classList.remove('hidden');
+        activateDoom();
       } else {
         error.textContent = 'Wrong password! Try again 💔';
         input.classList.add('shake');
@@ -219,7 +233,9 @@
   <script src="js/obstacles.js"></script>
   <script src="js/renderer.js"></script>
   <script src="js/editor.js"></script>
+  <script src="js/doom-mode.js"></script>
   <script src="js/game.js"></script>
+
 </body>
 
 </html>

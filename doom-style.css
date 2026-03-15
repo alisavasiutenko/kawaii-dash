@@ -1,0 +1,280 @@
+/* ──────────────────────────────────────────
+   DOOM MODE – CSS overrides
+   Applied when body has .doom-mode class
+────────────────────────────────────────── */
+
+body.doom-mode {
+  --pink:    #ff2200;
+  --lilac:   #ff4400;
+  --mint:    #ff6600;
+  --peach:   #ffaa00;
+  --sky:     #cc3300;
+  --lemon:   #ff8800;
+  --hotpink: #ff0000;
+  --purple:  #880000;
+  --teal:    #ff3300;
+  --gold:    #ff6600;
+  --red:     #ff0000;
+  --bg-top:  #0a0000;
+  --bg-bot:  #1a0500;
+  --panel-bg: rgba(20, 2, 0, 0.92);
+}
+
+body.doom-mode {
+  background: linear-gradient(160deg, #0a0000, #1a0500);
+  font-family: 'Orbitron', 'Nunito', monospace;
+}
+
+body.doom-mode::before {
+  content: '☠ 🔥 ⛧ ☠ 🔥 ⛧ ☠ 🔥';
+  color: rgba(255, 30, 0, 0.12);
+  animation: doomSparkles 10s linear infinite;
+}
+
+@keyframes doomSparkles {
+  from { transform: translateY(-30px); opacity: 0.05; }
+  50%  { opacity: 0.15; }
+  to   { transform: translateY(110vh); opacity: 0; }
+}
+
+/* ── Overlays ── */
+body.doom-mode .overlay {
+  background: rgba(10, 0, 0, 0.88);
+  backdrop-filter: blur(12px) saturate(1.5);
+}
+
+/* ── Title ── */
+body.doom-mode .game-title {
+  font-family: 'Orbitron', monospace;
+  text-shadow: 0 0 30px #ff0000, 0 0 70px #ff440088, 0 0 120px #ff000044;
+  animation: doomTitlePulse 2s ease-in-out infinite;
+  letter-spacing: 0.08em;
+}
+
+body.doom-mode .game-title span {
+  color: #ff2200;
+  text-shadow: 0 0 40px #ff0000, 0 0 80px #ff220088;
+}
+
+@keyframes doomTitlePulse {
+  0%, 100% { transform: translateY(0); text-shadow: 0 0 30px #ff0000, 0 0 70px #ff440088; }
+  50%      { transform: translateY(-4px); text-shadow: 0 0 50px #ff0000, 0 0 100px #ff440088, 0 0 150px #ff000044; }
+}
+
+body.doom-mode .title-hearts {
+  animation: doomHeartBeat 1.2s ease-in-out infinite;
+  color: #ff4400;
+}
+
+@keyframes doomHeartBeat {
+  0%, 100% { transform: scale(1); }
+  25%      { transform: scale(1.2); }
+  50%      { transform: scale(0.9); }
+  75%      { transform: scale(1.1); }
+}
+
+/* ── Level buttons ── */
+body.doom-mode .level-btn {
+  background: rgba(255, 20, 0, 0.08);
+  border: 2.5px solid rgba(255, 40, 0, 0.35);
+  font-family: 'Orbitron', monospace;
+}
+
+body.doom-mode .level-btn:hover,
+body.doom-mode .level-btn.active {
+  background: rgba(255, 20, 0, 0.2);
+  border-color: #ff2200;
+  box-shadow: 0 0 30px rgba(255, 30, 0, 0.5), inset 0 0 15px rgba(255, 30, 0, 0.15);
+}
+
+body.doom-mode .lvl-stars {
+  color: #ff6600;
+}
+
+body.doom-mode .lvl-tag {
+  color: #ff4400;
+}
+
+/* ── Buttons ── */
+body.doom-mode .btn-primary {
+  background: linear-gradient(135deg, #cc0000 0%, #880000 100%);
+  box-shadow: 0 6px 30px rgba(255, 0, 0, 0.5), 0 2px 8px rgba(0,0,0,0.5);
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+body.doom-mode .btn-primary:hover {
+  box-shadow: 0 12px 45px rgba(255, 0, 0, 0.7), 0 0 60px rgba(255, 30, 0, 0.3);
+}
+
+body.doom-mode .btn-primary::after {
+  background: rgba(255, 100, 0, 0.25);
+}
+
+body.doom-mode .btn-ghost {
+  background: rgba(255, 40, 0, 0.08);
+  border: 2px solid rgba(255, 40, 0, 0.3);
+  color: rgba(255, 150, 100, 0.8);
+  font-family: 'Orbitron', monospace;
+}
+
+body.doom-mode .btn-ghost:hover {
+  background: rgba(255, 40, 0, 0.2);
+  border-color: #ff4400;
+  color: #ff8866;
+  box-shadow: 0 0 25px rgba(255, 40, 0, 0.4);
+}
+
+/* ── HUD ── */
+body.doom-mode .hud-lvl-name {
+  font-family: 'Orbitron', monospace;
+  color: #ff2200;
+  text-shadow: 0 0 15px #ff0000;
+}
+
+body.doom-mode .progress-track {
+  background: rgba(255, 30, 0, 0.15);
+}
+
+body.doom-mode .progress-fill {
+  background: linear-gradient(90deg, #cc0000, #ff4400);
+  box-shadow: 0 0 12px #ff2200;
+}
+
+body.doom-mode .progress-label {
+  color: rgba(255, 150, 100, 0.6);
+}
+
+body.doom-mode .hud-attempts {
+  color: rgba(255, 150, 100, 0.55);
+  font-family: 'Orbitron', monospace;
+}
+
+body.doom-mode .hud-mode-badge {
+  background: rgba(255, 0, 0, 0.2);
+  border: 1.5px solid rgba(255, 30, 0, 0.5);
+  color: #ff4400;
+  font-family: 'Orbitron', monospace;
+}
+
+/* ── Panels (death / victory) ── */
+body.doom-mode .panel {
+  background: rgba(15, 2, 0, 0.92);
+  border: 2px solid rgba(255, 40, 0, 0.3);
+  box-shadow: 0 0 80px rgba(255, 0, 0, 0.3), 0 0 25px rgba(0,0,0,0.8);
+}
+
+body.doom-mode .panel-title {
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 0.1em;
+}
+
+body.doom-mode .panel-title.crash {
+  color: #ff0000;
+  text-shadow: 0 0 30px rgba(255, 0, 0, 0.9), 0 0 80px rgba(255, 0, 0, 0.5);
+}
+
+body.doom-mode .panel-title.win {
+  color: #ff6600;
+  text-shadow: 0 0 30px rgba(255, 100, 0, 0.9), 0 0 80px rgba(255, 60, 0, 0.5);
+}
+
+body.doom-mode .panel-sub {
+  color: rgba(255, 150, 100, 0.7);
+}
+
+body.doom-mode .star-row {
+  color: #ff4400;
+  text-shadow: 0 0 20px #ff2200;
+}
+
+/* ── Avatar section ── */
+body.doom-mode .avatar-section {
+  background: rgba(255, 20, 0, 0.06);
+  border: 1.5px solid rgba(255, 30, 0, 0.2);
+}
+
+body.doom-mode .avatar-label {
+  color: #ff4400;
+  font-family: 'Orbitron', monospace;
+}
+
+body.doom-mode .color-swatch.active {
+  border-color: #ff4400;
+  box-shadow: 0 0 26px var(--c), 0 0 10px #ff2200;
+}
+
+body.doom-mode .shape-swatch {
+  background: rgba(255, 20, 0, 0.08);
+  border: 2px solid rgba(255, 30, 0, 0.25);
+}
+
+body.doom-mode .shape-swatch:hover {
+  border-color: rgba(255, 40, 0, 0.6);
+  box-shadow: 0 0 18px rgba(255, 30, 0, 0.5);
+}
+
+body.doom-mode .shape-swatch.active {
+  border-color: #ff2200;
+  box-shadow: 0 0 25px rgba(255, 20, 0, 0.7), 0 0 8px #ff0000;
+  background: rgba(255, 20, 0, 0.2);
+}
+
+/* ── Password gate doom hint ── */
+body.doom-mode .pw-input:focus {
+  border-color: #ff2200;
+  box-shadow: 0 0 22px rgba(255, 30, 0, 0.5);
+}
+
+/* ── Editor (if opened in doom mode) ── */
+body.doom-mode .ed-toolbar {
+  background: rgba(10, 0, 0, 0.95);
+  border-bottom: 2px solid rgba(255, 40, 0, 0.3);
+}
+
+body.doom-mode .ed-tool {
+  background: rgba(255, 30, 0, 0.1);
+  border: 1.5px solid rgba(255, 30, 0, 0.3);
+}
+
+body.doom-mode .ed-tool:hover {
+  background: rgba(255, 30, 0, 0.22);
+  border-color: #ff4400;
+}
+
+body.doom-mode .ed-tool.active {
+  background: linear-gradient(135deg, #cc0000, #880000);
+  box-shadow: 0 0 16px rgba(255, 0, 0, 0.6);
+}
+
+/* ── Hint text ── */
+body.doom-mode .hint {
+  color: rgba(255, 100, 60, 0.35);
+  font-family: 'Orbitron', monospace;
+}
+
+/* ── Screen shake on death ── */
+body.doom-mode.doom-shake {
+  animation: doomShake 0.4s ease-out;
+}
+
+@keyframes doomShake {
+  0%   { transform: translate(0, 0); }
+  15%  { transform: translate(-8px, 4px); }
+  30%  { transform: translate(6px, -6px); }
+  45%  { transform: translate(-4px, 2px); }
+  60%  { transform: translate(4px, -3px); }
+  75%  { transform: translate(-2px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ── Vignette effect ── */
+body.doom-mode::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.6) 100%);
+}
