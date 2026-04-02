@@ -4,11 +4,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geometry Dash ✦ Kawaii Edition</title>
+  <title>the usles website</title>
   <meta name="description"
     content="Geometry Dash Kawaii Edition – a cute pastel rhythm-based platformer. Play in your browser!" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Pacifico&family=Orbitron:wght@400;700;900&display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Pacifico&family=Orbitron:wght@400;700;900&display=swap"
     rel="stylesheet" />
   <link rel="icon" href="favicon.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
@@ -20,10 +21,11 @@
   <!-- ── PASSWORD GATE ── -->
   <div id="passwordOverlay" class="overlay">
     <div class="panel password-panel">
-      <h2 class="panel-title" style="font-size:clamp(1rem, 3vw, 1.6rem); color:var(--pink);">Enter the password to play game</h2>
+      <h2 class="panel-title" style="font-size:clamp(1rem, 3vw, 1.6rem); color:var(--pink);">Enter the password to play
+        game</h2>
       <input id="passwordInput" type="password" class="pw-input" placeholder="Password..." autocomplete="off" />
       <p id="passwordError" class="pw-error"></p>
-      <button id="passwordBtn" class="btn-primary">♡ ENTER ♡</button>
+      <button id="passwordBtn" class="btn-primary"> ENTER </button>
     </div>
   </div>
 
@@ -107,16 +109,23 @@
         <p class="avatar-label" style="margin-top:6px;">✦ AVATAR SHAPE ✦</p>
         <div class="shape-palette" id="shapePalette">
           <button class="shape-swatch active" data-shape="square" title="Square">⬛</button>
-          <button class="shape-swatch" data-shape="star"    title="Star">⭐</button>
-          <button class="shape-swatch" data-shape="heart"   title="Heart">💗</button>
+          <button class="shape-swatch" data-shape="star" title="Star">⭐</button>
+          <button class="shape-swatch" data-shape="heart" title="Heart">💗</button>
           <button class="shape-swatch" data-shape="diamond" title="Diamond">💎</button>
-          <button class="shape-swatch" data-shape="cat"     title="Cat">🐱</button>
-          <button class="shape-swatch" data-shape="flower"  title="Flower">🌸</button>
+          <button class="shape-swatch" data-shape="cat" title="Cat">🐱</button>
+          <button class="shape-swatch" data-shape="flower" title="Flower">🌸</button>
         </div>
       </div>
 
+      <!-- Music Selector -->
+      <div class="music-section" id="musicSection">
+        <p class="avatar-label">✦ MUSIC ✦</p>
+        <div class="music-track-list" id="musicTrackList"></div>
+      </div>
+
       <button id="playBtn" class="btn-primary" aria-label="Start game">♡ PLAY ♡</button>
-      <button id="editorBtn" class="btn-ghost" style="margin-top:-10px;" aria-label="Open level editor">✏️ Level Editor</button>
+      <button id="editorBtn" class="btn-ghost" style="margin-top:-10px;" aria-label="Open level editor">✏️ Level
+        Editor</button>
       <p class="hint">SPACE / Click / Tap to jump &nbsp;|&nbsp; Hold for Ship / Wave modes</p>
     </div>
   </div>
@@ -159,8 +168,7 @@
   </div>
 
   <!-- ── LEVEL EDITOR ── -->
-  <div id="editorOverlay" class="overlay hidden"
-    style="flex-direction:column; justify-content:flex-start;">
+  <div id="editorOverlay" class="overlay hidden" style="flex-direction:column; justify-content:flex-start;">
     <div class="ed-toolbar">
       <div class="ed-tools">
         <button class="ed-tool active" data-tool="spike">🔺 Spike</button>
@@ -181,48 +189,61 @@
 
   <!-- ── PASSWORD GATE SCRIPT ── -->
   <script>
-  (function() {
-    var overlay  = document.getElementById('passwordOverlay');
-    var input    = document.getElementById('passwordInput');
-    var btn      = document.getElementById('passwordBtn');
-    var error    = document.getElementById('passwordError');
-    var menu     = document.getElementById('menuOverlay');
+    (function () {
+      var overlay = document.getElementById('passwordOverlay');
+      var input = document.getElementById('passwordInput');
+      var btn = document.getElementById('passwordBtn');
+      var error = document.getElementById('passwordError');
+      var menu = document.getElementById('menuOverlay');
 
-    menu.classList.add('hidden');
+      menu.classList.add('hidden');
 
-    function activateDoom() {
-      var waitForGame = setInterval(function() {
-        if (window.game && typeof DoomMode !== 'undefined') {
-          clearInterval(waitForGame);
-          DoomMode.activate(window.game);
-        }
-      }, 50);
-    }
-
-    function attempt() {
-      if (input.value === 'password') {
-        overlay.classList.add('hidden');
-        menu.classList.remove('hidden');
-      } else if (input.value.toLowerCase() === 'doom') {
-        overlay.classList.add('hidden');
-        menu.classList.remove('hidden');
-        activateDoom();
-      } else {
-        error.textContent = 'Wrong password! Try again 💔';
-        input.classList.add('shake');
-        setTimeout(function() { input.classList.remove('shake'); }, 500);
-        input.value = '';
-        input.focus();
+      function activateDoom() {
+        var waitForGame = setInterval(function () {
+          if (window.game && typeof DoomMode !== 'undefined') {
+            clearInterval(waitForGame);
+            DoomMode.activate(window.game);
+          }
+        }, 50);
       }
-    }
 
-    btn.addEventListener('click', attempt);
-    input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') attempt();
-    });
+      function activateGlitch() {
+        var waitForGame = setInterval(function () {
+          if (window.game && typeof GlitchMode !== 'undefined') {
+            clearInterval(waitForGame);
+            GlitchMode.activate(window.game);
+          }
+        }, 50);
+      }
 
-    input.focus();
-  })();
+      function attempt() {
+        if (input.value === 'password') {
+          overlay.classList.add('hidden');
+          menu.classList.remove('hidden');
+        } else if (input.value.toLowerCase() === 'doom') {
+          overlay.classList.add('hidden');
+          menu.classList.remove('hidden');
+          activateDoom();
+        } else if (input.value.toLowerCase() === 'glitch') {
+          overlay.classList.add('hidden');
+          menu.classList.remove('hidden');
+          activateGlitch();
+        } else {
+          error.textContent = 'Wrong password! Try again 💔';
+          input.classList.add('shake');
+          setTimeout(function () { input.classList.remove('shake'); }, 500);
+          input.value = '';
+          input.focus();
+        }
+      }
+
+      btn.addEventListener('click', attempt);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') attempt();
+      });
+
+      input.focus();
+    })();
   </script>
 
   <!-- ── SCRIPTS ── -->
@@ -234,6 +255,8 @@
   <script src="js/renderer.js"></script>
   <script src="js/editor.js"></script>
   <script src="js/doom-mode.js"></script>
+  <script src="js/glitch-mode.js"></script>
+  <script src="js/music-selector.js"></script>
   <script src="js/game.js"></script>
 
 </body>

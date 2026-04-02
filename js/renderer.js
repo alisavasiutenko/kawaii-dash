@@ -47,67 +47,126 @@ class Renderer {
         const level = game.levelDef;
         const stops = level ? level.bgStops : ['#1a0530', '#2e0d4a'];
 
+        /* Base gradient */
         const grad = ctx.createLinearGradient(0, 0, 0, H);
         grad.addColorStop(0, stops[0]);
         grad.addColorStop(1, stops[1]);
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, W, H);
 
-        /* Parallax star-grid */
+        /* Parallax grid – slower layer */
         this._drawGrid(game, W, H, accent);
 
-        /* Subtle pulsing halo at bottom */
-        const pulse = 0.12 + 0.05 * Math.sin(this._time * 3);
-        const halo = ctx.createLinearGradient(0, H - 200, 0, H);
+        /* Floating geometric diamonds – parallax layer */
+        this._drawBgShapes(game, W, H, accent);
+
+        /* Pulsing bottom halo */
+        const pulse = 0.12 + 0.06 * Math.sin(this._time * 3);
+        const halo = ctx.createLinearGradient(0, H - 250, 0, H);
         halo.addColorStop(0, 'transparent');
         halo.addColorStop(1, accent + Math.round(pulse * 255).toString(16).padStart(2, '0'));
         ctx.fillStyle = halo;
-        ctx.fillRect(0, H - 200, W, 200);
+        ctx.fillRect(0, H - 250, W, 250);
     }
 
     _drawGrid(game, W, H, accent) {
         const { ctx } = this;
-        const scroll = game.worldX * 0.3;
+        const scroll = game.worldX * 0.15;  // slow parallax
         const gridSz = 80;
 
         ctx.save();
-        ctx.strokeStyle = accent + '18';
+        ctx.strokeStyle = accent + '12';
         ctx.lineWidth = 1;
 
-        // Vertical lines
         const startX = (-scroll % gridSz + gridSz) % gridSz;
         for (let x = startX - gridSz; x < W + gridSz; x += gridSz) {
             ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
         }
-        // Horizontal lines
         for (let y = 0; y < H; y += gridSz) {
             ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
         }
         ctx.restore();
     }
 
-    /* ── Ground ── */
+    _drawBgShapes(game, W, H, accent) {
+        const { ctx } = this;
+        const t = this._time;
+        const scroll = game.worldX * 0.08;
+        ctx.save();
+
+        /* Floating diamond shapes at different parallax depths */
+        const shapes = [
+            { x: 120, y: 100, s: 30, speed: 0.03 },
+            { x: 380, y: 180, s: 22, speed: 0.05 },
+            { x: 600, y: 80,  s: 35, speed: 0.02 },
+            { x: 850, y: 220, s: 18, speed: 0.06 },
+            { x: 200, y: 300, s: 24, speed: 0.04 },
+            { x: 500, y: 350, s: 28, speed: 0.035 },
+            { x: 750, y: 130, s: 20, speed: 0.045 },
+            { x: 950, y: 280, s: 32, speed: 0.025 },
+        ];
+
+        for (const sh of shapes) {
+            const sx = ((sh.x - scroll * sh.speed * 50) % (W + 200) + W + 200) % (W + 200) - 100;
+            const sy = sh.y + Math.sin(t * 0.8 + sh.x) * 12;
+            const rot = t * 0.3 + sh.x;
+            const pulse = 0.06 + 0.03 * Math.sin(t * 1.5 + sh.x);
+
+            ctx.save();
+            ctx.translate(sx, sy);
+            ctx.rotate(rot);
+            ctx.globalAlpha = pulse;
+            ctx.strokeStyle = accent;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(0, -sh.s);
+            ctx.lineTo(sh.s * 0.6, 0);
+            ctx.lineTo(0, sh.s);
+            ctx.lineTo(-sh.s * 0.6, 0);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+        }
+        ctx.restore();
+    }
+
+    /* ── Ground – GD-style checkerboard ── */
     _drawGround(game, W, H, accent) {
         const { ctx } = this;
         const gY = game.groundY;
+        const T = 40;
+        const scroll = game.worldX;
+        const groundH = H - gY;
+        const cols = Math.ceil(W / T) + 2;
+        const rows = Math.ceil(groundH / T) + 1;
+        const offsetX = -((scroll % T) + T) % T;
+        const colStart = Math.floor(scroll / T);
 
-        /* Ground line glow */
+        /* Checkerboard tiles */
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const tx = offsetX + c * T;
+                const ty = gY + r * T;
+                const worldCol = colStart + c;
+                const isLight = (worldCol + r) % 2 === 0;
+                ctx.fillStyle = isLight ? accent + '28' : accent + '14';
+                ctx.fillRect(tx, ty, T, T);
+            }
+        }
+
+        /* Bright ground line with heavy glow */
         ctx.save();
         ctx.shadowColor = accent;
-        ctx.shadowBlur = 18;
+        ctx.shadowBlur = 24;
         ctx.strokeStyle = accent;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 3;
         ctx.beginPath(); ctx.moveTo(0, gY); ctx.lineTo(W, gY); ctx.stroke();
-
-        /* Ground fill */
-        const gGrad = ctx.createLinearGradient(0, gY, 0, H);
-        gGrad.addColorStop(0, accent + '33');
-        gGrad.addColorStop(1, accent + '08');
-        ctx.fillStyle = gGrad;
-        ctx.fillRect(0, gY, W, H - gY);
+        /* Double-stroke for extra glow */
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, gY); ctx.lineTo(W, gY); ctx.stroke();
         ctx.restore();
 
-        /* Ceiling line */
+        /* Ceiling line (subtle) */
         ctx.save();
         ctx.shadowColor = accent + '88';
         ctx.shadowBlur = 8;
@@ -149,74 +208,164 @@ class Renderer {
     }
 
     _drawSpike(ctx, x, y, w, h, ceiling, accent) {
-        ctx.fillStyle = accent;
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1;
+        /* Gradient fill like the real GD spikes */
+        let tipX = x + w / 2;
+        let tipY = ceiling ? y + h : y;
+        let baseY = ceiling ? y : y + h;
+        const grad = ctx.createLinearGradient(x, baseY, tipX, tipY);
+        grad.addColorStop(0, accent);
+        grad.addColorStop(1, '#ffffff66');
+
+        ctx.fillStyle = grad;
         ctx.beginPath();
         if (ceiling) {
             ctx.moveTo(x, y);
             ctx.lineTo(x + w, y);
-            ctx.lineTo(x + w / 2, y + h);
+            ctx.lineTo(tipX, y + h);
         } else {
             ctx.moveTo(x, y + h);
             ctx.lineTo(x + w, y + h);
-            ctx.lineTo(x + w / 2, y);
+            ctx.lineTo(tipX, y);
         }
         ctx.closePath();
         ctx.fill();
+
+        /* Center line detail (like real GD spikes) */
+        ctx.strokeStyle = '#ffffff55';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        if (ceiling) {
+            ctx.moveTo(tipX, y);
+            ctx.lineTo(tipX, y + h);
+        } else {
+            ctx.moveTo(tipX, y + h);
+            ctx.lineTo(tipX, y);
+        }
+        ctx.stroke();
+
+        /* Glow outline */
+        ctx.strokeStyle = '#ffffffaa';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        if (ceiling) {
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + w, y);
+            ctx.lineTo(tipX, y + h);
+        } else {
+            ctx.moveTo(x, y + h);
+            ctx.lineTo(x + w, y + h);
+            ctx.lineTo(tipX, y);
+        }
+        ctx.closePath();
         ctx.stroke();
     }
 
     _drawBlock(ctx, x, y, w, h, accent) {
-        /* Fill */
-        const grad = ctx.createLinearGradient(x, y, x + w, y + h);
-        grad.addColorStop(0, accent + 'cc');
-        grad.addColorStop(1, accent + '55');
-        ctx.fillStyle = grad;
-        ctx.fillRect(x, y, w, h);
+        const T = 40;
 
-        /* Inner detail lines */
-        ctx.strokeStyle = '#ffffff33';
-        ctx.lineWidth = 1;
-        for (let tx = x; tx < x + w; tx += TILE) {
-            ctx.strokeRect(tx, y, TILE, h);
+        /* Per-tile gradient fill */
+        for (let tx = x; tx < x + w; tx += T) {
+            for (let ty = y; ty < y + h; ty += T) {
+                const grad = ctx.createLinearGradient(tx, ty, tx + T, ty + T);
+                grad.addColorStop(0, accent + 'cc');
+                grad.addColorStop(0.5, accent + '88');
+                grad.addColorStop(1, accent + '55');
+                ctx.fillStyle = grad;
+                ctx.fillRect(tx, ty, T, T);
+
+                /* Inner X-cross pattern (authentic GD block detail) */
+                ctx.strokeStyle = '#ffffff22';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(tx, ty); ctx.lineTo(tx + T, ty + T);
+                ctx.moveTo(tx + T, ty); ctx.lineTo(tx, ty + T);
+                ctx.stroke();
+
+                /* Inner border */
+                ctx.strokeStyle = '#ffffff18';
+                ctx.strokeRect(tx + 2, ty + 2, T - 4, T - 4);
+            }
         }
 
-        /* Glow border */
+        /* Bright glow outer border */
+        ctx.shadowColor = accent;
+        ctx.shadowBlur = 12;
         ctx.strokeStyle = accent;
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.strokeRect(x, y, w, h);
+        ctx.shadowBlur = 0;
     }
 
     _drawPortal(ctx, x, y, w, h, mode, t) {
         const modeColors = { cube: '#a8d8ff', ship: '#ff9ed2', ball: '#fff4a8', wave: '#aaf0d1' };
-        const modeIcons = { cube: '⬛', ship: '✈', ball: '⚫', wave: '〰' };
         const col = modeColors[mode] || '#ffffff';
 
-        /* Pulsing portal frame */
         const pulse = 0.6 + 0.4 * Math.sin(t * 5);
+        const cx = x + w / 2;
+        const cy = y + h / 2;
+
+        /* Outer spinning ring */
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(t * 2);
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 2;
+        ctx.shadowColor = col;
+        ctx.shadowBlur = 30 * pulse;
+        ctx.globalAlpha = pulse * 0.6;
+        ctx.beginPath();
+        ctx.arc(0, 0, h / 2 + 4, 0, Math.PI * 1.5);
+        ctx.stroke();
+        ctx.restore();
+
+        /* Inner rectangle frame */
         ctx.strokeStyle = col;
         ctx.lineWidth = 3 * pulse;
         ctx.shadowColor = col;
-        ctx.shadowBlur = 30 * pulse;
+        ctx.shadowBlur = 25 * pulse;
         ctx.strokeRect(x, y, w, h);
 
+        /* Centre gradient fill */
+        const portalGrad = ctx.createLinearGradient(x, y, x, y + h);
+        portalGrad.addColorStop(0, col + '22');
+        portalGrad.addColorStop(0.5, col + '11');
+        portalGrad.addColorStop(1, col + '22');
+        ctx.fillStyle = portalGrad;
+        ctx.fillRect(x, y, w, h);
+
         /* Label */
-        ctx.fillStyle = col + 'cc';
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = col;
         ctx.font = 'bold 11px Orbitron, monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(mode.toUpperCase(), x + w / 2, y + h / 2 + 4);
+        ctx.fillText(mode.toUpperCase(), cx, cy + 4);
     }
 
     _drawEndGate(ctx, x, groundY, ceilingY, accent) {
+        const pulse = 0.7 + 0.3 * Math.sin(this._time * 4);
+
+        /* Full glow line */
         ctx.strokeStyle = '#ffd700';
         ctx.shadowColor = '#ffd700';
-        ctx.shadowBlur = 25;
-        ctx.lineWidth = 4;
+        ctx.shadowBlur = 35 * pulse;
+        ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.moveTo(x, ceilingY);
         ctx.lineTo(x, groundY);
         ctx.stroke();
+
+        /* Dashed secondary lines */
+        ctx.setLineDash([8, 8]);
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(x - 8, ceilingY);
+        ctx.lineTo(x - 8, groundY);
+        ctx.moveTo(x + 8, ceilingY);
+        ctx.lineTo(x + 8, groundY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.globalAlpha = 1;
     }
 
     /* ── Player ── */

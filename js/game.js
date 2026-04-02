@@ -50,6 +50,7 @@ class Game {
         window.addEventListener('resize', () => this._resize());
         this._wireUI();
         this._wireInput();
+        this._buildMusicSelector();
 
         /* Loop */
         this._lastTime = 0;
@@ -201,7 +202,20 @@ class Game {
         const savedShape = localStorage.getItem('gd_player_shape');
         if (savedShape) this.player.shape = savedShape;
         this.state = GameState.PLAYING;
-        this.audio.play(lv.bpm, lv.theme);
+
+        // Music: if a Minecraft track is selected, play it instead of (or alongside) chiptune
+        const musicTrack = typeof MusicSelector !== 'undefined' ? MusicSelector.getSelectedTrack() : 'default';
+        if (musicTrack === 'silent') {
+            // No music at all
+        } else if (musicTrack === 'default') {
+            this.audio.play(lv.bpm, lv.theme);
+        } else {
+            // Play Minecraft track + muted chiptune for timing
+            this.audio.play(lv.bpm, lv.theme);
+            // Lower chiptune volume and play selected track
+            if (this.audio._master) this.audio._master.gain.value = 0.12;
+            MusicSelector.play();
+        }
     }
 
     /* ──────────── Main loop ──────────── */
@@ -296,6 +310,7 @@ class Game {
         if (this.state !== GameState.PLAYING) return;
         this.state = GameState.DEAD;
         this.audio.stop();
+        if (typeof MusicSelector !== 'undefined') MusicSelector.stop();
 
         /* Burst particles */
         const p = this.player;
@@ -323,6 +338,7 @@ class Game {
         if (this.state !== GameState.PLAYING) return;
         this.state = GameState.VICTORY;
         this.audio.stop();
+        if (typeof MusicSelector !== 'undefined') MusicSelector.stop();
         const hasNext = this.currentLevel < LEVELS.length - 1;
         setTimeout(() => this._showVictory(hasNext), 600);
     }
@@ -349,6 +365,8 @@ class Game {
     _showMenu() {
         this.state = GameState.MENU;
         this.audio.stop();
+        if (typeof MusicSelector !== 'undefined') MusicSelector.stop();
+        if (this.audio._master) this.audio._master.gain.value = 0.55;
         this.$menuOverlay.classList.remove('hidden');
     }
 
@@ -373,6 +391,30 @@ class Game {
     _showVictory(hasNext) {
         this.$nextBtn.style.display = hasNext ? '' : 'none';
         this.$victoryScreen.classList.remove('hidden');
+    }
+    /* ──────────── Music Selector UI ──────────── */
+    _buildMusicSelector() {
+        if (typeof MusicSelector === 'undefined') return;
+        const container = document.getElementById('musicTrackList');
+        if (!container) return;
+
+        const tracks = MusicSelector.getTracks();
+        const selected = MusicSelector.getSelectedTrack();
+
+        container.innerHTML = '';
+        tracks.forEach(track => {
+            const btn = document.createElement('button');
+            btn.className = 'music-track-btn' + (track.id === selected ? ' active' : '');
+            btn.dataset.track = track.id;
+            btn.title = track.desc;
+            btn.innerHTML = `<span class="track-icon">${track.icon}</span><span class="track-name">${track.name}</span>`;
+            btn.addEventListener('click', () => {
+                container.querySelectorAll('.music-track-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                MusicSelector.setSelectedTrack(track.id);
+            });
+            container.appendChild(btn);
+        });
     }
 }
 
